@@ -1,15 +1,17 @@
 package com.example.tobis.dao;
 
 import com.example.tobis.domain.User;
-import org.springframework.boot.webmvc.autoconfigure.WebMvcProperties;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-public class UserDao {
+public class UserDaoTest {
 
     private final SimpleConnectorMaker simpleConnectorMaker;
 
-    public UserDao(){
+    public UserDaoTest(){
         simpleConnectorMaker = new SimpleConnectorMaker();
     }
 
@@ -62,8 +64,7 @@ public class UserDao {
 public static void main(String[] args) throws SQLException, ClassNotFoundException {
 //		SpringApplication.run(TobisApplication.class, args);
 
-//    ConnectionMaker connectionMaker = new ConnectionMaker();
-    UserDao dao = new UserDao();
+    UserDaoTest dao = new UserDaoTest();
 
     User user = new User();
     user.setId("dana");
