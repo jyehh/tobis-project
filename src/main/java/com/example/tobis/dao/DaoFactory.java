@@ -1,10 +1,19 @@
 package com.example.tobis.dao;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+//애플리케이션 컨텍스트 또는 빈 팩토리가 사용할 설정정보
+@Configuration
 public class DaoFactory {
-//    public UserDao userDao() {
-//        ConnectionMaker connectionMaker = new DConnectionMaker();
-//        UserDao userDao = new UserDao(connectionMaker);
-//
-//        return UserDao;
-//    }
+    //오브젝트 생성을 담당하는 IoC용 메소드
+    @Bean
+    public UserDao userDao() {
+        return new UserDao(connectionMaker());
+    }
+
+    @Bean
+    public ConnectionMaker connectionMaker() {
+        return new DConnectionMaker();
+    }
 }

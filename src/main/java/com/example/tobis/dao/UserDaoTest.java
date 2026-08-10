@@ -1,6 +1,9 @@
 package com.example.tobis.dao;
 
 import com.example.tobis.domain.User;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,78 +12,30 @@ import java.sql.SQLException;
 
 public class UserDaoTest {
 
-    private final SimpleConnectorMaker simpleConnectorMaker;
+    public static void main(String[] args) throws SQLException, ClassNotFoundException {
+    //		SpringApplication.run(TobisApplication.class, args);
 
-    public UserDaoTest(){
-        simpleConnectorMaker = new SimpleConnectorMaker();
-    }
+//        ConnectionMaker connectionMaker = new DConnectionMaker();
+//        UserDao dao = new DaoFactory().userDao();
 
-    public void add(User user) throws ClassNotFoundException, SQLException{
-        Connection c = simpleConnectorMaker.makeNewConnection();
+        ApplicationContext con = new AnnotationConfigApplicationContext(DaoFactory.class);
+        UserDao dao = con.getBean(UserDao.class);
 
-        PreparedStatement ps = c.prepareStatement(
-                "insert into users(id,name,password) values(?,?,?)"
-        );
-        ps.setString(1,user.getId());
-        ps.setString(2,user.getName());
-        ps.setString(3,user.getPassword());
-
-        ps.executeUpdate();
-
-        ps.close();
-        c.close();
-
-    }
-
-    public User get(String id) throws ClassNotFoundException, SQLException{
-        Connection c = simpleConnectorMaker.makeNewConnection();
-
-        PreparedStatement ps = c.prepareStatement(
-                "select * from users where id = ?"
-        );
-        ps.setString(1,id);
-
-        ResultSet rs = ps.executeQuery();
-        rs.next();
         User user = new User();
-        user.setId(rs.getString("id"));
-        user.setName(rs.getString("name"));
-        user.setPassword(rs.getString("password"));
+        user.setId("dana");
+        user.setName("박지혜");
+        user.setPassword("password");
 
-        rs.close();
-        ps.close();
-        c.close();
+        dao.add(user);
 
-        return user;
+        System.out.println(user.getId() + " 등록 성공");
+
+        User user2 = dao.get(user.getId());
+        System.out.println(user2.getName());
+        System.out.println(user2.getPassword());
+
+        System.out.println(user2.getId() + " 조회 성공");
 
     }
-//
-//    private Connection getConnection() throws ClassNotFoundException, SQLException {
-//        Class.forName("org.postgresql.Driver");
-//        Connection c = DriverManager.getConnection("jdbc:postgresql://localhost/tobis","dana","123!@#");
-//
-//        return c;
-//    }
-public static void main(String[] args) throws SQLException, ClassNotFoundException {
-//		SpringApplication.run(TobisApplication.class, args);
-
-    UserDaoTest dao = new UserDaoTest();
-
-    User user = new User();
-    user.setId("dana");
-    user.setName("박지혜");
-    user.setPassword("password");
-
-    dao.add(user);
-
-    System.out.println(user.getId() + " 등록 성공");
-
-    User user2 = dao.get(user.getId());
-    System.out.println(user2.getName());
-    System.out.println(user2.getPassword());
-
-    System.out.println(user2.getId() + " 조회 성공");
-
-}
 
 }
