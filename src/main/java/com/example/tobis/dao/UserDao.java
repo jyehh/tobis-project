@@ -5,16 +5,21 @@ import org.springframework.boot.webmvc.autoconfigure.WebMvcProperties;
 
 import java.sql.*;
 
-public class UserDao {
+public abstract class UserDao {
 
-    private final SimpleConnectorMaker simpleConnectorMaker;
+//    private final SimpleConnectorMaker simpleConnectorMaker;
+
+    private ConnectionMaker connectionMaker;
 
     public UserDao(){
-        simpleConnectorMaker = new SimpleConnectorMaker();
+//        simpleConnectorMaker = new SimpleConnectorMaker();
+        connectionMaker = new NConnectionMaker();
     }
 
     public void add(User user) throws ClassNotFoundException, SQLException{
-        Connection c = simpleConnectorMaker.makeNewConnection();
+//        Connection c = getConnection();
+//        Connection c = simpleConnectorMaker.makeNewConnection();
+        Connection c = connectionMaker.makeConnection();
 
         PreparedStatement ps = c.prepareStatement(
                 "insert into users(id,name,password) values(?,?,?)"
@@ -31,7 +36,10 @@ public class UserDao {
     }
 
     public User get(String id) throws ClassNotFoundException, SQLException{
-        Connection c = simpleConnectorMaker.makeNewConnection();
+//        Connection c = simpleConnectorMaker.makeNewConnection();
+//        Connection c = getConnection();
+
+        Connection c = connectionMaker.makeConnection();
 
         PreparedStatement ps = c.prepareStatement(
                 "select * from users where id = ?"
@@ -52,23 +60,25 @@ public class UserDao {
         return user;
 
     }
-//
-//    private Connection getConnection() throws ClassNotFoundException, SQLException {
+
+    public abstract Connection getConnection() throws ClassNotFoundException, SQLException ;
 //        Class.forName("org.postgresql.Driver");
 //        Connection c = DriverManager.getConnection("jdbc:postgresql://localhost/tobis","dana","123!@#");
 //
 //        return c;
-//    }
+
+
+
 public static void main(String[] args) throws SQLException, ClassNotFoundException {
 //		SpringApplication.run(TobisApplication.class, args);
 
 //    ConnectionMaker connectionMaker = new ConnectionMaker();
-    UserDao dao = new UserDao();
+    UserDao dao = new DUserDao();
 
     User user = new User();
-    user.setId("dana");
-    user.setName("박지혜");
-    user.setPassword("password");
+    user.setId("dana2");
+    user.setName("박지혜2");
+    user.setPassword("password2");
 
     dao.add(user);
 
